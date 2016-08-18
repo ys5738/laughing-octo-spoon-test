@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+ xmlns:context="http://www.springframework.org/schema/context"  
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xmlns:aop="http://www.springframework.org/schema/aop"
+	     xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+           http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.0.xsd
+           http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.0.xsd
+           http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd"  
+           > 
+
+
+	<bean id="animal" class="Animal" abstract="true">
+		<property name="msg" value="a" />
+	</bean>
+	<bean id="performerOne" class="ys.spring.aop.test.PerformerOne" >
+	</bean>
+	<bean id="innerClassOne" class="ys.spring.aop.test.InnerClassOne" >
+	</bean>
+
+	<context:component-scan base-package="ys.spring.aop.test" />
+	  
+	<context:component-scan base-package="ys.SpringTest" />
+
+	<bean id="audience" class="ys.spring.aop.test.Audience"/>
+    <aop:config proxy-target-class="true">
+        <aop:aspect ref="audience">
+            <aop:pointcut id="performance" expression="execution(* ys.spring.aop.test.Performer.perform(..))"/>
+            <aop:pointcut id="say" expression="execution(* ys.spring.aop.test.InnerClass.say(..))"/>
+            
+            <aop:before pointcut-ref="performance" method="beforeOne"/>
+            <aop:before pointcut-ref="performance" method="beforeTwo"/>
+            <aop:after-returning pointcut-ref="performance" method="afterOne"/>
+            <aop:after-throwing pointcut-ref="performance" method="afterThrowing"/>
+
+            <aop:after-returning pointcut-ref="say" method="afterTwo"/>
+            
+        </aop:aspect>
+    </aop:config>
+</beans>
